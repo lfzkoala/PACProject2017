@@ -1,0 +1,100 @@
+% Team members:
+% Linfeng Zhou (lzhou15)
+% Amit Watve (awatve)
+
+\documentclass{article}
+\usepackage{algorithm, algpseudocode}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm, enumerate, hyperref}
+\usepackage{color}
+\usepackage{setspace}
+\usepackage{fancyhdr,lastpage}
+\usepackage{url}
+\usepackage{tabularx}
+\pagestyle{fancy}
+\lhead{\footnotesize Opportunity Identification Project}
+\chead{Team 8}
+\rhead{\footnotesize CSC (791/495)-011 -- Fall 2017}
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+
+\newcommand{\defproblem}[4]{%
+  \hfill\\\smallskip\noindent%
+  \begin{tabularx}{\textwidth}{|l X|}%
+    \hline%
+    \multicolumn{2}{|l|}{\pname{#1}}\\%
+    \textbf{Input:}&#2\\%
+    \textbf{Parameter:}&#3\\%
+    \textbf{Question:}&#4\smallskip\\\hline%
+  \end{tabularx}%
+  \smallskip%
+}%
+
+\newcommand{\pname}[1]{\textnormal{\textsc{#1}}}
+
+\newtheorem*{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem*{lemma}{Lemma}
+
+
+\begin{document}
+
+
+\title{Nash Equilibrium for two player games}
+\date{}
+\maketitle
+
+
+
+\begin{abstract}
+We try to explore some open problems in algorithmic game theory so as to find simplified versions of them particularly which could have parameterized algorithms. Particularly we focus on problems related to finding Nash equilibrium for pure and mixed strategy two player games.
+
+\end{abstract}
+
+\subsection*{Introduction}
+
+\defproblem{$2$-Nash}
+%
+{A two-player(bimatrix) game}
+%
+{support sizes bounded by $k$}
+%
+{Can we compute the Nash equilibrium in less than $n^{O(k)}$ time? Furthermore, can we find a special case of Nash Equilibrium in bimatrix games and solve it in $FPT$ time?}
+%
+
+The central problem in algorithmic game theory is that of computing a Nash
+equilibrium, a set of strategies for each player in a given game, where no player
+can gain by changing his strategy when all other players strategies remain fixed \cite{hermelin2013parameterized}.
+
+Roughly speaking, Nash's theorem states that for any finite game a mixed Nash equilibrium always exists. However, this concept is not very meaningful for predicting behaviors of rational agents such as real-world computers. Namely it doesn't live in the computation world. To overcome this gap, researchers such as Papadimitriou started investigating the problem of computing Nash equilibria as an important complexity problem \cite{papadimitriou2001algorithms}.
+
+The first breakthrough in determining the computational complexity of Nash equilibrium was made by Daskalakis, Goldberg, and Papadimitriou \cite{daskalakis2009complexity,goldberg2006reducibility}. They introduced a reduction technique that shows a Nash equilibrium in a four player game is PPAD-complete. In subsequent works, Daskalakis and Papadimitriou \cite{daskalakis2005three}, and Chen and Deng \cite{chen20053} extended this result to 3-player games. The case of two player games (a.k.a., bimatrix games) was finally solved by Chen and Deng \cite{chen2006settling}. That is, they proved that computing Nash equilibria in two player games is PPAD-complete. More importantly, this result implies the impossibility of the existence of a polynomial-time algorithm for the core case of bimatrix games.
+
+\subsection*{Background}
+\textsc{Nash} is a very different kind of intractable problem, one for which NP-completeness is not an appropriate concept of complexity. This is due to the fact that \emph{every game} is guaranteed to have a \textsc{Nash} Equilibrium as opposed to NP-complete problems such as \textsc{satisfiability} in which a solution may or may not exist \cite{nisan2007algorithmic}. Consequently, bimatrix, the problem of finding a Nash equilibrium in a two-player game, is complete for the complexity class PPAD (Polynomial Parity Argument, Directed version) introduced by Papadimitriou in 1991 \cite{chen2009settling,daskalakis2009complexity}.
+
+Since the result of Chen and Deng \cite{chen2006settling}, the academia started focusing on exploring the possibilities of computing Nash equilibria in bimatrix games in somewhat weaker conditions. There are two main lines of research about this problem. The first one is to find \textit{approximate} Nash equilibria \cite{bosse2007new,chen2006computing,chen2006sparse,chen2007approximation,daskalakis2007progress,daskalakis2006note,lipton2003playing}. The second line of research is to find special cases where exact equilibria can be computed in polynomial time \cite{lipton2003playing,addario2007polynomial,chen2006sparse,codenotti2006efficient,kalyanaraman2007algorithms}.
+However, the best known algorithm for general bimatrix games for computing either approximating or exact equilibria essentially tries all possibilities for the support of both players (i.e., the set of strategies played with non-zero probability), which can be assumed to be at most logarithmic in the approximate case \cite{lipton2003playing}. Once the support of both players is known, one can compute a Nash equilibrium by solving a linear program. That is, a Nash equilibrium in a bimatrix game can be computed in \(n^{O(k)}\) time \cite{nisan2007algorithmic}.
+
+
+\subsection*{Related Work}
+Centering around this result, a natural question to ask is \textit{can we remove the dependency on the support size from the exponent?}. This brings this question into the world of parameterized complexity theory, which is a standard framework for answering such questions. Estivill-Castro and Parsa initiated the study of computing Nash equilibria using parameterized algorithmic techniques in \cite{estivill2009computing}. They showed that if bimatrix games is parameterized by the support size, it is \(W[2]\)-hard even in certain restricted settings. Combining this result and the results of Chen et al.\cite{chen2004tight}, we obtain a devastating consequence that there is no \(n^{o(k)}\) time algorithm for computing bimatrix game parameterized by support size at most \(k\), unless \(FPT=W[1]\). In other words, for large enough games that have equilibriums with reasonably small supports, the task of computing equilibria already becomes infeasible. 
+
+A new line of research is to identify natural parameters which govern the complexity of computing Nash equilibria, and which can help in devising feasible algorithms. Kalyanaraman and Umans \cite{kalyanaraman2007algorithms} provided a fixed-parameter algorithm for finding equilibrium in bimatrix games whose matrices have small rank (and some additional constraints).
+
+In a subsequent work, several works \cite{hermelin2013parameterized,codenotti2006efficient,addario2007polynomial} considered the graph-theoretic representation of bimatrix games, a natural class of games that has a convenient interpretation in the graph-theoretic context is the class of \(\ell\)-sparse games \cite{chen2006sparse,codenotti2006efficient,daskalakis2009oblivious}, in which each column and row have at most \(\ell\) non-zero entries in both payoff matrices. A natural attempt is to try to devise a parameterized algorithm with \(\ell\) taken as a single parameter. However, Chen, Deng and Teng \cite{chen2006sparse} showed that there is no algorithm for computing an \(\epsilon\)-approximate equilibrium for a 10-sparse game in polynomial time in \(\epsilon\) and \(n\), unless \(PPAD=P\). Therefore, such an FPT algorithm cannot exist unless PPAD is in P. Hermelin et.al.\cite{hermelin2013parameterized} showed that a Nash equilibrium in a \(\ell\)-sparse bimatrix game can be computed in FPT time when we take \(\ell\) and \(k\) as parameters, where \(k\) is the size of supports. They also considered finding Nash equilibrium in a \(k\)-unbalanced bimatrix game and Nash equilibrium in a locally bounded treewidth game and they proposed FPT algorithms respectively. 
+
+Thomas et al. explore PNE-GG, the problem of deciding the existence of a Pure Nash Equilibrium in a graphical game, and the role of treewidth in this problem. PNE-GG is known to be NP -complete in general, but polynomially solvable for graphical games of bounded treewidth. They further show that PNE-GG is   W[1]-Hard when parameterized by treewidth \cite{thomas2015pure}.
+
+\subsection*{Importance}
+The emergence of the internet has given rise to numerous applications in this area such as online
+auctions, online advertising, and search engine page ranking, where humans and computers interact with each other as selfish agents negotiating to maximize their own payoff utilities \cite{hermelin2013parameterized}. The amount of research spent in attempting to devise computational models and algorithms for studying these types of interactions has been overwhelming in recent years due to its direct correlation with increased economic benefits. Before game theory, economists often analyzed markets simply in terms of the supply and demand of the goods to be sold, with no way to discuss the rules of the game that make one kind of auction different from another or make auctions different from other kinds of markets (such as stock markets or shopping malls). Today, that discussion is most often carried forward by analyzing the Nash equilibria of the auction rules.
+\medskip
+
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+
+\end{document}
